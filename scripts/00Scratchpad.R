@@ -1,10 +1,23 @@
-years <- c(1976, 1986, 1996, 2001, 2003, 2005, 2007, 2009, 2011, 2013, 2015)
 
+library(dplyr)
+library(tidyr)
+filter(full, Country.code == 4)
 
-urls <- sapply(years, function(x) paste0("https://esa.un.org/poppolicy/WPPDatasets/",
-              x, "_WPPDataset_AllVariables.xls"))
+filter(full, Country..name == "Iran (Islamic Republic of)")
+plot(filter(full, Country..name == "Iraq")$year,
+     filter(full, Country..name == "Iraq")$growth.rate, type = "b",
+     col=filter(full, Country..name == "Iraq")$Policy.on.growth)
+points(filter(full, Country..name == "Iraq")[[6]],
+     filter(full, Country..name == "Iraq")[[10]],
+     col=filter(full, Country..name == "Iraq")[[3]] )
 
-file.names <- sapply(years, function(x) paste0("data/wpp", years, ".xls"))
+unique(full[full$region == "Africa",][[3]])
+unique(full$Policy.on.fertility.level)
 
-sapply(1:length(years), function(x) 
-       download.file(urls[x], destfile = file.names[x], mode = "wb"))
+x <- 854
+plot(filter(full, Country.code == x)$year,
+     filter(full, Country.code == x)$growth.rate, type = "b",
+     col=filter(full, Country.code == x)$Policy.on.fertility.level,
+     ylim = c(-3,7),
+     main = paste("Policy.on.fertility.level in", full$Country..name[match(x,full$Country.code)]))
+
