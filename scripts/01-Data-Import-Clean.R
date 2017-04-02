@@ -28,7 +28,7 @@ file.names <- paste0("data/wpp",years , ".xls")
 # but also removing missin grows where country == NA
 FunImport <- function(x) {
   # imports each excel file
-  assign(paste0("df.", x), read.xlsx(paste0("data/wpp",x , ".xls"),
+  assign(paste0("df.", x), xlsx::read.xlsx(paste0("data/wpp",x , ".xls"),
                                      sheetIndex = 1, header = TRUE,
                                      startRow= 2), envir = .GlobalEnv)
   # remove extra rows we don't need
@@ -56,7 +56,7 @@ for (i in 2:length(years)) {
 }
 
 rm(df.1976, df.1986, df.1996, df.2001, df.2003, df.2005, df.2007, df.2009,
-   df.2011, df.2013, df.2015, new, FunImport, i, urls, years, file.names )
+   df.2011, df.2013, df.2015, new, FunImport, i, years, file.names )
 
 
 # ###############################################################################
@@ -151,14 +151,51 @@ annual.growth.rate <- select(annual.growth.rate, -1, -2)
 annual.growth.rate <- filter(annual.growth.rate, year >= 1976 &  year < 2016)
 
 
+# 5. TFR rates
+# 
+# url <- paste0("http://www.un.org/en/development/desa/population/publications/",
+#               "dataset/fertility/wfd2015/UNPD_WFD_2015_FERTILITY.xlsx")
+# download.file(url, destfile = "data/wpp.total.fert.xlsx", mode = "wb")
+# 
+# # import data
+library("openxlsx")
+tfr <- read.xlsx("data/wpp.total.fert.xlsx", sheet = 3,
+                      startRow= 3)
+
+
 # merge
 full <- left_join(full, annual.growth.rate)
 rm(annual.growth.rate)
 # make policies factors again
 full[4:6] <- lapply(full[4:6] , factor)
 
-# 
-write.csv(full, file = "data/complete.csv")
+
+## select subset - Developing countries that have a policy to Raise fert level in 2015
+###############################################################################
+
+full %>% 
+  group_by(Country..name) %>% 
+  filter(year == 2015,
+         Policy.on.fertility.level == "Raise" | Policy.on.growth == "Raise",
+         Development == "Developing")  %>% 
+  filter(!is.na(Country.Name)) %>% 
+  ungroup() %>% 
+  select(Country..name) %>% unlist() -> selection
+
+full %>% 
+  filter(Country..name %in% selection) %>% 
+  mutate(Policy.on.fertility.level = as.factor(Policy.on.fertility.level),
+         Policy.on.growth = as.factor(Policy.on.growth))-> working.df
+
+#rename DPRK koreas
+tfr$Country.or.area[tfr$Country.or.area == "Dem. People's Republic of Korea"] <-
+  "Democratic People's Republic of Korea"  
 
 
+## select subset - of TFR data as well
+###############################################################################
+tfr %>%  filter(Country.or.area %in% selection) %>% 
+  filter(Indicator == "TFR") -> working.tfr
 
+
+save(working.df, working.tfr, file = "data/imported.RData")
