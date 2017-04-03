@@ -198,4 +198,12 @@ tfr %>%  filter(Country.or.area %in% selection) %>%
   filter(Indicator == "TFR") -> working.tfr
 
 
+## a bit more tidying 
+# remove tfrs for before 1976
+working.tfr <- filter(working.tfr, TimeMid >=1976)
+# remove tfrs for before 1996 for soviet reps
+working.tfr <- filter(working.tfr, 
+                      !(Country.or.area %in% c("Armenia", "Georgia", "Kazakhstan", "Turkmenistan") & TimeMid <= 1996))
+
+
 save(working.df, working.tfr, file = "data/imported.RData")
