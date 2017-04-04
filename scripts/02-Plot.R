@@ -2,8 +2,6 @@
 ## plots
 ###############################################################################
 
-
-
 ## preliminaries
 ###############################################################################
 load("data/imported.RData")
@@ -61,16 +59,16 @@ FunPlot2 <- function(i, policy = "growth"){
   
   rect(years[1:11], rep(min.max[1],11),
        years[2:12], rep(min.max[2],11),
-       border = "gray", lty = 3,
+       border = "white", lty = 3,
        col =    palette[col])
   rect(years[1:11], rep(min.max[1],11),
        years[2:12], rep(min.max[2],11),
        col = "white", density = 12, angle = 30, lwd = 3)
   if (policy == "growth") {
     lines(c(1976, 2016), c(0,0), col = "white", lwd = 3)
-    points(x$year, x$growth.rate,  pch = 16)
+    points(x$year, x$growth.rate,  pch = 16, cex = 1.3)
   } else {
-    lines(c(1976, 2016), c(2.05,2.05), col = "white", lwd = 2)
+    lines(c(1976, 2016), c(2.1,2.1), col = "white", lwd = 3)
     points(x.t$TimeMid, x.t$DataValue,  pch = 21, cex = 1.3, bg = "white", lwd = 2)
   }
   if (i %in% c(1,9,12,22)) {axis(2, las = 2, pos = 1995)}else{
@@ -87,47 +85,94 @@ FunPlots <- function(x){
 }
 
 
+## plots
+###############################################################################
 
+height = 5.5 
+width = 10 
 # latin american and carribean
 FunPlots(2)
-dev.copy2eps(file="../figures/barbados.eps", height=6, width=10)
+dev.copy2eps(file="../figures/barbados.eps", height=height, width=width)
 FunPlots(3)
-dev.copy2eps(file="../figures/chile.eps", height=6, width=10)
+dev.copy2eps(file="../figures/chile.eps", height=height, width=width)
 FunPlots(5)
-dev.copy2eps(file="../figures/cuba.eps", height=6, width=10)
+dev.copy2eps(file="../figures/cuba.eps", height=height, width=width)
 FunPlots(24)
-dev.copy2eps(file="../figures/uruguay.eps", height=6, width=10)
-
+dev.copy2eps(file="../figures/uruguay.eps", height=height, width=width)
 
 # ex soviet:
 FunPlots(1)
-dev.copy2eps(file="../figures/armenia.eps", height=6, width=10)
+dev.copy2eps(file="../figures/armenia.eps", height=height, width=width)
 FunPlots(9)
-dev.copy2eps(file="../figures/georgia.eps", height=6, width=10)
+dev.copy2eps(file="../figures/georgia.eps", height=height, width=width)
 FunPlots(12)
-dev.copy2eps(file="../figures/kazakhstan.eps", height=6, width=10)
+dev.copy2eps(file="../figures/kazakhstan.eps", height=height, width=width)
 FunPlots(22)
-dev.copy2eps(file="../figures/turkmenistan.eps", height=6, width=10)
-
-
-
-exsov <- c(1,9,12,22)
-lapply(exsov, FunPlots)
-
-
-# east asian
-east <- c(4, 7, 15, 17, 19, 20)
-lapply(east, FunPlots)
+dev.copy2eps(file="../figures/turkmenistan.eps", height=height, width=width)
 
 # arab and perisan
-arab <- c(10, 13, 16, 18, 21, 23)
-lapply(arab, FunPlots)
+FunPlots(10)
+dev.copy2eps(file="../figures/iran.eps", height=height, width=width)
+FunPlots(13)
+dev.copy2eps(file="../figures/kuwait.eps", height=height, width=width)
+FunPlots(16)
+dev.copy2eps(file="../figures/qatar.eps", height=height, width=width)
+FunPlots(18)
+dev.copy2eps(file="../figures/saudi.arabia.eps", height=height, width=width)
+FunPlots(21)
+dev.copy2eps(file="../figures/turkey.eps", height=height, width=width)
+FunPlots(23)
+dev.copy2eps(file="../figures/uae.eps", height=height, width=width)
 
-# Mediteranean
-med <- c(6, 11)
+# east asian
+FunPlots(4)
+dev.copy2eps(file="../figures/china.eps", height=height, width=width)
+FunPlots(7)
+dev.copy2eps(file="../figures/dprk.eps", height=height, width=width)
+FunPlots(15)
+dev.copy2eps(file="../figures/mongolia.eps", height=height, width=width)
+FunPlots(17)
+dev.copy2eps(file="../figures/korea.eps", height=height, width=width)
+FunPlots(19)
+dev.copy2eps(file="../figures/singapore.eps", height=height, width=width)
+FunPlots(20)
+dev.copy2eps(file="../figures/thailand.eps", height=height, width=width)
 
-lapply(med, FunPlots)
-# Africa 
-africa <- c(8,14)
-lapply(africa, FunPlots)
+# med
+FunPlots(6)
+dev.copy2eps(file="../figures/cyprus.eps", height=height, width=width)
+FunPlots(11)
+dev.copy2eps(file="../figures/israel.eps", height=height, width=width)
+
+# africa
+FunPlots(8)
+dev.copy2eps(file="../figures/gabon.eps", height=height, width=width)
+FunPlots(14)
+dev.copy2eps(file="../figures/mauritius.eps", height=height, width=width)
+
+## LEGEND
+#################################
+palette <- c(  "seashell4",
+               "lightpink",
+             "goldenrod2",
+             "darkolivegreen3")
+
+
+par(mfrow = c(1,1))
+par(mar = c(15,1,1,20))
+plot(0,0, ylim = c(0,1), xlim = c(0,4),type = "n", bty = "n", axes = FALSE, xlab = "", ylab = "")
+rect(0:3, rep(0, 4), 1:4,rep(1,4),
+     col =    palette, border = "white")
+rect(0:3, rep(0, 4), 1:4,rep(1,4),
+     col = "white", density = 12, angle = 30, lwd = 3)
+text(letters[4:1],
+     x = (0:3)+0.5, y = -0.1,  srt=90)
+lines(c(0,4), c(0.5, 0.5), col = "white", lwd = 3)
+points(seq(0.5,3.5, length = 10),rep(0.75, 10),  pch = 16, cex = 1.3)
+
+points(seq(0.5,3.5, length = 10),rep(0.25, 10),  pch = 21, cex = 1.3, bg = "white", lwd = 2)
+
+text(LETTERS[1:2],
+     x = 4.3, y = c(0.25, 0.75))
+dev.copy2eps(file="../figures/ledge.eps", height=height, width=width)
 
